@@ -2,13 +2,19 @@
 
 use teleparse::{derive_syntax, tp};
 
-use crate::syn;
+use super::token::{
+    AngledWord, ColonOrEqual, KwAll, MetaValueLiteral, Number, QuotedWord, SlotClause, SymComma,
+    SymLBracket, SymRBracket, Word,
+};
+
+use super::category::Category;
+use super::{KwEquip, KwTime};
 
 /// Syntax for an item prefixed with a numeric amount
 #[derive_syntax]
 #[derive(Debug)]
 pub struct NumberedItem {
-    pub num: syn::Number,
+    pub num: Number,
     pub item: Item,
 }
 
@@ -16,7 +22,7 @@ pub struct NumberedItem {
 #[derive_syntax]
 #[derive(Debug)]
 pub struct NumberedItemOrCategory {
-    pub num: syn::Number,
+    pub num: Number,
     pub item: ItemOrCategory,
 }
 
@@ -33,7 +39,7 @@ pub enum NumberedOrAllItemOrCategory {
 #[derive(Debug)]
 pub struct AllItemOrCategory {
     #[teleparse(semantic(Amount))]
-    pub all: syn::KwAll,
+    pub all: KwAll,
     pub item: ItemOrCategory,
 }
 
@@ -42,7 +48,7 @@ pub struct AllItemOrCategory {
 #[derive(Debug)]
 pub enum ItemOrCategory {
     Item(Item),
-    Category(syn::Category),
+    Category(Category),
 }
 
 /// Syntax for specifying a single item with a slot
@@ -50,7 +56,7 @@ pub enum ItemOrCategory {
 #[derive(Debug)]
 pub struct ItemOrCategoryWithSlot {
     pub item: ItemOrCategory,
-    pub slot: tp::Option<syn::SlotClause>,
+    pub slot: tp::Option<SlotClause>,
 }
 
 // /// Syntax for an item prefixed with an amount or "infinite"
@@ -81,21 +87,21 @@ pub struct Item {
 #[derive(Debug)]
 pub enum ItemName {
     /// Using `-` or `_` separated word to search item by English name
-    Word(tp::String<syn::Word>),
+    Word(tp::String<Word>),
     /// Use quoted value to search by name in any language
-    Quoted(tp::String<syn::QuotedWord>),
+    Quoted(tp::String<QuotedWord>),
     /// Use angle brackets to use the literal as the actor name
     /// e.g. `<Weapon_Sword_070>`
-    Angle(syn::AngledWord),
+    Angle(AngledWord),
 }
 
 /// Syntax for the metadata specifier for an item, e.g. `[key1:value1, key2=value2, key3]`
 #[derive_syntax]
 #[derive(Debug)]
 pub struct ItemMeta {
-    pub open: syn::SymLBracket,
-    pub entries: tp::Punct<ItemMetaKeyValue, syn::SymComma>,
-    pub close: syn::SymRBracket,
+    pub open: SymLBracket,
+    pub entries: tp::Punct<ItemMetaKeyValue, SymComma>,
+    pub close: SymRBracket,
 }
 
 /// A key-value pair in an item's metadata specifier
@@ -114,9 +120,9 @@ pub struct ItemMetaKeyValue {
 #[derive_syntax]
 #[derive(Debug)]
 pub enum ItemMetaKey {
-    Time(syn::KwTime),
-    Equip(syn::KwEquip),
-    Other(syn::Word),
+    Time(KwTime),
+    Equip(KwEquip),
+    Other(Word),
 }
 
 /// Value after the key in an item's metadata specifier
@@ -124,7 +130,7 @@ pub enum ItemMetaKey {
 #[derive(Debug)]
 pub struct ItemMetaValue {
     /// The seperator between the key and value
-    pub sep: syn::ColonOrEqual,
+    pub sep: ColonOrEqual,
     /// The value of the key-value pair
-    pub value: syn::MetaValueLiteral,
+    pub value: MetaValueLiteral,
 }

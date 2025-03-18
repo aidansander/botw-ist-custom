@@ -1,4 +1,4 @@
-use teleparse::{tp, ToSpan};
+use teleparse::ToSpan;
 
 use crate::cir;
 use crate::error::{Error, ErrorReport};
@@ -37,7 +37,7 @@ pub struct ItemSelectSpec {
     pub item: ItemOrCategory,
 
     /// The slot number to select from, 0 means not specified
-    pub slot: i32,
+    pub slot: i64,
 }
 
 #[derive(Debug, Clone)]
@@ -57,16 +57,6 @@ pub struct Item {
     /// The "star" option should always be None, and the actor
     /// is adjusted to be the actor with the given star num
     pub meta: Option<cir::ItemMeta>,
-}
-pub async fn parse_item_list_finite_optional<R: QuotedItemResolver>(
-    list: &tp::Option<syn::ItemListFinite>,
-    resolver: &R,
-    errors: &mut Vec<ErrorReport>,
-) -> Vec<ItemSpec> {
-    match list.as_ref() {
-        Some(list) => parse_item_list_finite(list, resolver, errors).await,
-        None => Vec::new(),
-    }
 }
 
 pub async fn parse_item_list_finite<R: QuotedItemResolver>(
@@ -255,13 +245,13 @@ async fn parse_item_name<R: QuotedItemResolver>(
 }
 
 /// Parse a SlotClause syntax node
-fn parse_slot_clause(slot: Option<&syn::SlotClause>) -> Result<i32, ErrorReport> {
+fn parse_slot_clause(slot: Option<&syn::SlotClause>) -> Result<i64, ErrorReport> {
     match slot {
         None => Ok(0),
         Some(slot) => {
-            let slot_num = cir::parse_syn_int_str_i32(&slot.idx, &slot.idx.span())?;
+            let slot_num = cir::parse_syn_int_str(&slot.idx, &slot.idx.span())?;
             if slot_num < 1 {
-                return Err(Error::InvalidSlotClause(slot_num).spanned(slot));
+                return Err(Error::InvalidSlotClause(slot_num as i32).spanned(slot));
             }
             Ok(slot_num)
         }

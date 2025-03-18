@@ -82,8 +82,6 @@ mod parser_error {
         InvalidEmptyItem,
         #[error("invalid integer format: {0}")]
         IntFormat(String),
-        #[error("integer `{0}` is out of range")]
-        IntRange(String),
         #[error("invalid number format: {0}")]
         FloatFormat(String),
         #[error("unused meta key: {0}")]
@@ -110,24 +108,6 @@ mod parser_error {
         InvalidInventoryRow(i32),
         #[error("`{0}` is not a valid column in the inventory, valid values are [1, 2, 3, 4, 5]")]
         InvalidInventoryCol(i32),
-        #[error("The `{0}` key should not have a value when used in this context")]
-        UnexpectedMetaKeyWithValue(String),
-        #[error("The maximum length allowed for the string is {0} in this context")]
-        InvalidStringLength(u32),
-        #[error(
-            "GDT meta must include one of the following properties: bool, s32, f32, vec2f or vec3f"
-        )]
-        GdtTypeNotSet,
-        #[error(
-            "GDT string meta must include one of the following properties: str32, str64, or str256"
-        )]
-        GdtStrTypeNotSet,
-        #[error("`{1}` is not a valid number of slots for category `{0:?}`")]
-        InvalidEquipmentSlotNum(cir::Category, i32),
-        //////////////////////////////////
-        // Add new errors below
-        // The translation files needs to be updated accordingly!!!
-        //////////////////////////////////
     }
 }
 

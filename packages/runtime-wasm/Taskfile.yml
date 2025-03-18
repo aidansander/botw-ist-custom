@@ -4,100 +4,35 @@ includes:
   ecma:
     taskfile: ../mono-dev/task/ecma.yaml
     internal: true
-  cargo:
-    taskfile: ../mono-dev/task/cargo.yaml
-    internal: true
 
 tasks:
-  # temporary for local dev, until runtime can be checked
-  install:
-    cmds:
-      - task: ecma:mono-config
-
   build:
-    desc: Run wasm-bindgen and build the dev dist package
     cmds:
       - task: build-wasm
       - task: build-dist
 
   build-wasm:
     cmds:
-      - task: cargo:wasm-pack-build
-        vars:
-          PACKAGE: skybook_runtime_wasm
-          WASM_PACK_ARGS: -t no-modules --no-pack
-
-  clean-dist:
-    cmds:
-      - rm -rf dist
+      - wasm-pack build -t no-modules --no-pack
 
   build-dist:
     vars:
       BUILD_DIR: dist
-      SKYBOOK_JS: "{{.BUILD_DIR}}/skybook.js"
-      WORKER_JS: "{{.BUILD_DIR}}/worker.js"
-      SKYBOOK_WASM: "{{.BUILD_DIR}}/skybook.wasm"
-        
     cmds:
       - $(which mkdir) -p {{.BUILD_DIR}}
-      - cp pkg/skybook_runtime_wasm_bg.wasm {{.SKYBOOK_WASM}}
-      - cp pkg/skybook_runtime_wasm.js {{.SKYBOOK_JS}}
-      - cmd: >
-          echo 'bundling worker';
-          cp pkg/skybook_runtime_wasm.js {{.WORKER_JS}};
-          echo 'self["__skybook_path_base"]="/runtime/skybook";' >> {{.WORKER_JS}};
-          echo 'self["__min"]=false;' >> {{.WORKER_JS}};
-          bun build src/worker.ts >> {{.WORKER_JS}};
-        silent: true
-
-  build-dist-min:
-    desc: Clean and build the minified production package
-    vars:
-      BUILD_DIR: dist
-      COMMIT_SHORT:
-        sh: git rev-parse HEAD | cut -c1-8
-      SKYBOOK_MIN_JS: "{{.BUILD_DIR}}/skybook-{{.COMMIT_SHORT}}.min.js"
-      WORKER_MIN_JS: "{{.BUILD_DIR}}/worker-{{.COMMIT_SHORT}}.min.js"
-      SKYBOOK_WASM: "{{.BUILD_DIR}}/skybook-{{.COMMIT_SHORT}}.wasm"
-    cmds:
-      - $(which mkdir) -p {{.BUILD_DIR}}
-      - cp pkg/skybook_runtime_wasm_bg.wasm {{.SKYBOOK_WASM}}
-      - cmd: >
-          echo 'minifying wasm_bindgen module';
-          echo 'let wasm_bindgen;(function(){function __export(x){wasm_bindgen=x;};' > {{.SKYBOOK_MIN_JS}};
-          cp pkg/skybook_runtime_wasm.js {{.WORKER_MIN_JS}};
-          echo '__export(wasm_bindgen)' >> {{.WORKER_MIN_JS}};
-          bun build --minify {{.WORKER_MIN_JS}} >> {{.SKYBOOK_MIN_JS}};
-          echo '})();' >> {{.SKYBOOK_MIN_JS}};
-        silent: true
-      - cmd: >
-          echo 'bundling minified worker';
-          cp {{.SKYBOOK_MIN_JS}} {{.WORKER_MIN_JS}};
-          echo 'self["__skybook_path_base"]="/runtime/skybook-{{.COMMIT_SHORT}}";' >> {{.WORKER_MIN_JS}};
-          echo 'self["__min"]=true;' >> {{.WORKER_MIN_JS}};
-          bun build --minify src/worker.ts >> {{.WORKER_MIN_JS}};
-        silent: true
-    
+      - cp pkg/skybook_runtime_wasm.js {{.BUILD_DIR}}/worker.js
+      - cp pkg/skybook_runtime_wasm_bg.wasm {{.BUILD_DIR}}/skybook.wasm
+      - bun build src/worker.ts >> {{.BUILD_DIR}}/worker.js
 
   check:
+    desc: Run Linter and Formatter
     cmds:
-      - task: cargo:clippy-all
-      - task: cargo:fmt-check
-      - task: ecma:mono-check
+      - task: ecma:tsc-check
+      - task: ecma:eslint-check
+      - task: ecma:prettier-check
 
   fix:
+    desc: Fix issues in code
     cmds:
-      - task: cargo:fmt-fix
-      - task: ecma:mono-fix
-
-  pull-dist:
-    desc: Download Runtime WASM for local development
-    vars:
-      ORIGIN: https://ist.pistonite.app
-      COMMIT:
-        sh: curl {{.ORIGIN}}/commit | cut -c1-8
-    cmds:
-      - $(which mkdir) -p dist
-      - wget -O dist/worker.js {{.ORIGIN}}/runtime/worker-{{.COMMIT}}.min.js
-      - wget -O dist/skybook.js {{.ORIGIN}}/runtime/skybook-{{.COMMIT}}.min.js
-      - wget -O dist/skybook.wasm {{.ORIGIN}}/runtime/skybook-{{.COMMIT}}.wasm
+      - task: ecma:eslint-fix
+      - task: ecma:prettier-fix

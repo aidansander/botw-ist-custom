@@ -1,16 +1,14 @@
-import { memo } from "react";
-
 import {
     useAllNonPopoutExtensionIds,
     useCurrentPrimaryExtensionId,
     useExtensionStore,
     usePrimaryExtensionIds,
-} from "self::application/store";
-import { openExtensionPopup } from "self::application/extension";
-import { isLessProductive } from "self::pure-contrib";
-
+} from "application/extensionStore";
 import { ExtensionToolbar } from "./components/ExtensionToolbar.tsx";
 import { ExtensionOpenButton } from "./ExtensionOpenButton.tsx";
+import { isLessProductive } from "pure-contrib/platform.ts";
+import { openExtensionPopup } from "application/extensionManager.ts";
+import { memo } from "react";
 
 const ExtensionToolbarPrimaryConnected: React.FC = () => {
     const currentPrimaryId = useCurrentPrimaryExtensionId();

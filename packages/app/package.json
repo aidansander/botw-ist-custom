@@ -1,4 +1,5 @@
 {
+    "name": "skybook-app",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -9,28 +10,29 @@
         "@pistonite/intwc": "workspace:*",
         "@pistonite/pure": "catalog:",
         "@pistonite/pure-react": "catalog:",
-        "@pistonite/shared-controls": "workspace:*",
         "@pistonite/skybook-api": "workspace:*",
+        "@pistonite/shared-controls": "workspace:*",
         "@pistonite/workex": "catalog:",
         "@tanstack/react-query": "^5.62.11",
-        "@uidotdev/usehooks": "^2.4.1",
-        "botw-item-assets": "workspace:*",
         "mobile-device-detect": "^0.4.3",
         "react": "catalog:",
         "react-dom": "catalog:",
         "reselect": "^5.1.1",
         "skybook-item-system": "workspace:*",
         "skybook-localization": "workspace:*",
-        "skybook-parser-legacy": "workspace:*",
+        "skybook-runtime-wasm": "workspace:*",
         "zustand": "^5.0.2"
     },
     "devDependencies": {
-        "@pistonite/vite-plugin-intwc": "workspace:*",
+        "@modyfi/vite-plugin-yaml": "catalog:",
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
-        "monaco-editor": "*",
+        "@vitejs/plugin-react": "catalog:",
+        "eslint": "catalog:",
         "mono-dev": "workspace:*",
+        "typescript": "catalog:",
         "vite": "catalog:",
-        "vite-plugin-serve-static": "^1.1.0"
+        "vite-proxy-serve-static": "^1.0.1",
+        "vite-tsconfig-paths": "^5.1.4"
     }
 }

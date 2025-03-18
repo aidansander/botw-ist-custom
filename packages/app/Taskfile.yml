@@ -11,21 +11,22 @@ tasks:
     cmds:
       - task: ecma:vite-dev
 
-  build:
-    desc: Build production bundle
-    cmds:
-      - task: ecma:vite-build
-      - $(which mkdir) -p dist/static/item-assets
-      - cp -r ../item-assets/public/* dist/static/item-assets
-      - $(which mkdir) -p dist/static/item-system
-      - cp -r ../item-system/public/* dist/static/item-system
-  # note the runtime is packaged separately so it can be built in parallel
+  # build:
+  #   desc: Build production bundle
+  #   cmds:
+  #     - npx tsc
+  #     - npx vite build
 
   check:
+    desc: Check for errors
     cmds:
-      - task: ecma:mono-check
+      - task: ecma:tsc-check-build
+      - task: ecma:eslint-check
+      - task: ecma:prettier-check
 
   fix:
+    desc: Fix errors
     cmds:
-      - task: ecma:mono-fix
+      - task: ecma:eslint-fix
+      - task: ecma:prettier-fix
 

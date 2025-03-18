@@ -5,10 +5,6 @@ includes:
     taskfile: ../mono-dev/task/ecma.yaml
     internal: true
 
-  git:
-    taskfile: ../mono-dev/task/git.yaml
-    internal: true
-
 tasks:
   build:
     desc: Generate the localization files
@@ -17,27 +13,17 @@ tasks:
       - python scripts/generate.py
       
   check:
+    desc: Run Linter and Formatter
     cmds:
-      - task: ecma:mono-check
-      - bun scripts/check-lang-entries.ts
-      - task: fix-language
-      - task: git:check-modification
-        vars:
-          CHECK_PATH: packages/localization/src/ui
-          CHECK_MESSAGE: Please run localization:fix task to update the translation
+      - task: ecma:tsc-check
+      - task: ecma:eslint-check
+      - task: ecma:prettier-check
+
   fix:
+    desc: Fix issues in code
     cmds:
-      - task: ecma:mono-fix
-      - task: fix-language
-
-  fix-language:
-    cmds:
-      - bun scripts/edit-language.ts
-
-  edit:
-    desc: Make edits to the translation files
-    cmds:
-      - bun scripts/edit-language.ts -
+      - task: ecma:eslint-fix
+      - task: ecma:prettier-fix
 
   push-artifacts:
     desc: Push generated files. Requires gcloud access

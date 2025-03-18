@@ -13,7 +13,6 @@ export type ParserError =
     | { type: "InvalidItem"; data: string }
     | { type: "InvalidEmptyItem" }
     | { type: "IntFormat"; data: string }
-    | { type: "IntRange"; data: string }
     | { type: "FloatFormat"; data: string }
     | { type: "UnusedMetaKey"; data: string }
     | { type: "InvalidMetaValue"; data: [string, MetaValue] }
@@ -26,9 +25,4 @@ export type ParserError =
     | { type: "InvalidTrial"; data: string }
     | { type: "InvalidCategory"; data: Category }
     | { type: "InvalidInventoryRow"; data: number }
-    | { type: "InvalidInventoryCol"; data: number }
-    | { type: "UnexpectedMetaKeyWithValue"; data: string }
-    | { type: "InvalidStringLength"; data: number }
-    | { type: "GdtTypeNotSet" }
-    | { type: "GdtStrTypeNotSet" }
-    | { type: "InvalidEquipmentSlotNum"; data: [Category, number] };
+    | { type: "InvalidInventoryCol"; data: number };

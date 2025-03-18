@@ -1,29 +1,11 @@
 version: '3'
 
-includes:
-  cargo:
-    taskfile: ../mono-dev/task/cargo.yaml
-    internal: true
-  mdbook:
-    taskfile: ../mono-dev/task/mdbook.yaml
-    internal: true
-  parser:
-    taskfile: ../parser
-    dir: ../parser
-    internal: true
-  item-assets:
-    taskfile: ../item-assets
-    dir: ../item-assets
-    internal: true
-
 tasks:
   install:
     cmds:
-      - task: mdbook:install-theme-monorepo
-      - cargo run --bin skybook-manual-preprocessor -- style > theme/skybook.css
-      - cp src/icon.svg theme/favicon.svg
-      - cp src/icon.png theme/favicon.png
-      - bun preprocess/inject-meta.ts pre
+      - mkdir -p theme
+      - rm -f theme/*
+      - cp ../mono-dev/book/theme/* theme
   dev:
     desc: Start mdbook in watch mode
     cmds:
@@ -34,19 +16,7 @@ tasks:
   build:
     desc: (Re-)build the book
     cmds:
+      - cargo run --bin skybook-manual-preprocessor -- style > theme/skybook.css
       - rm -rf book
       - mdbook build
-      - task: parser:package-artifacts-public
-      - task: item-assets:package-artifacts-public
-      - bun preprocess/inject-meta.ts post
-
-  check:
-    cmds:
-      - task: cargo:clippy-all
-      - task: cargo:fmt-check
-
-  fix:
-    cmds:
-      - task: cargo:fmt-fix
-    
 

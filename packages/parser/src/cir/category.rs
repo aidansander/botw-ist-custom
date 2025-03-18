@@ -1,4 +1,4 @@
-use enumset::{enum_set, EnumSet, EnumSetType};
+use enumset::{EnumSet, EnumSetType};
 use serde::Serialize;
 use teleparse::ToSpan;
 
@@ -20,46 +20,9 @@ pub enum Category {
     Bow,
     Shield,
     Armor,
-    ArmorHead,
-    ArmorUpper,
-    ArmorLower,
     Material,
     Food,
     KeyItem,
-}
-
-impl Category {
-    /// Check if this category is an armor category
-    pub const fn is_armor(&self) -> bool {
-        matches!(
-            self,
-            Category::Armor | Category::ArmorHead | Category::ArmorUpper | Category::ArmorLower
-        )
-    }
-
-    /// Return the armor category if this category is armor (or a subcategory of armor),
-    /// otherwise return the category itself
-    pub const fn coerce_armor(&self) -> Self {
-        match self {
-            Category::ArmorHead => Category::Armor,
-            Category::ArmorUpper => Category::Armor,
-            Category::ArmorLower => Category::Armor,
-            other => *other,
-        }
-    }
-
-    /// Return categories except for ArmorHead, ArmorUpper, and ArmorLower
-    pub const fn non_sub_categories() -> EnumSet<Self> {
-        enum_set!(
-            Category::Weapon
-                | Category::Bow
-                | Category::Shield
-                | Category::Armor
-                | Category::Material
-                | Category::Food
-                | Category::KeyItem
-        )
-    }
 }
 
 pub fn parse_category_in(
@@ -80,9 +43,6 @@ pub fn parse_category(category: &syn::Category) -> Category {
         syn::Category::Bow(_) => Category::Bow,
         syn::Category::Shield(_) => Category::Shield,
         syn::Category::Armor(_) => Category::Armor,
-        syn::Category::ArmorHead(_) => Category::ArmorHead,
-        syn::Category::ArmorUpper(_) => Category::ArmorUpper,
-        syn::Category::ArmorLower(_) => Category::ArmorLower,
         syn::Category::Material(_) => Category::Material,
         syn::Category::Food(_) => Category::Food,
         syn::Category::KeyItem(_) => Category::KeyItem,
@@ -141,11 +101,11 @@ pub fn parse_times_clause(times: Option<&syn::TimesClause>) -> Result<i64, Error
     match times {
         None => Ok(1),
         Some(times) => {
-            let t = cir::parse_syn_int_str_i32(&times.times, &times.span())?;
+            let t = cir::parse_syn_int_str(&times.times, &times.span())?;
             if t < 1 {
-                return Err(Error::InvalidTimesClause(t).spanned(times));
+                return Err(Error::InvalidTimesClause(t as i32).spanned(times));
             }
-            Ok(t as i64)
+            Ok(t)
         }
     }
 }

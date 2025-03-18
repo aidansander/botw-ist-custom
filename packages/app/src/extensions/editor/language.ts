@@ -1,3 +1,4 @@
+
 /**
  * Lanaguage definition for the Skybook script
  */
@@ -53,8 +54,6 @@ export const language: LanguageTokenizer = {
         "destroy",
         "sort",
         "entangle",
-        "sync",
-        "break",
         "save",
         "save-as",
         "reload",
@@ -66,7 +65,7 @@ export const language: LanguageTokenizer = {
         "untalk",
         "enter",
         "exit",
-        "leave",
+        "leave"
     ],
     types: [
         "weapon",
@@ -77,27 +76,6 @@ export const language: LanguageTokenizer = {
         "shields",
         "armor",
         "armors",
-
-        "armor-head",
-        "head-armor",
-        "head-armors",
-        "armor-body",
-        "body-armor",
-        "body-armors",
-        "armor-chest",
-        "chest-armor",
-        "chest-armors",
-        "armor-upper",
-        "upper-armor",
-        "upper-armors",
-        "armor-leg",
-        "armor-legs",
-        "leg-armor",
-        "leg-armors",
-        "armor-lower",
-        "lower-armor",
-        "lower-armors",
-
         "material",
         "materials",
         "food",
@@ -105,9 +83,12 @@ export const language: LanguageTokenizer = {
         "key-item",
         "key-items",
     ],
-    keywords: ["time", "times", "from", "in", "at", "to", "slot", "slots"],
-    annotaions: [
-        ":test", // TODO
+    keywords: [
+        "time",
+        "times",
+    ],
+    annotaions:  [
+        ":test" // TODO
     ],
 
     word: /[_a-zA-Z][-0-9a-zA-Z_]*/,
@@ -119,15 +100,12 @@ export const language: LanguageTokenizer = {
             [/#.*$/, "comment"],
             [/[{}()[\]]/, "@brackets"],
             // this is before delimiter so the ":" is matched
-            [
-                /(:)(@word)/,
-                {
-                    cases: {
-                        "@annotaions": "keyword.annotation",
-                        "@default": ["delimiter", "string.item"],
-                    },
+            [/(:)(@word)/, {
+                cases: {
+                    "@annotaions": "keyword.annotation",
+                    "@default": ["delimiter", "string.item"],
                 },
-            ],
+            }],
             [/[=:,;]/, "delimiter"],
             [/(\d(_?\d)*)|(0x[\da-fA-F](_?[\da-fA-F])*)/, "number"],
             [/<@word>/, "string.item.literal"],
@@ -145,13 +123,6 @@ export const language: LanguageTokenizer = {
                     },
                 },
             ],
-            // this has to be a separate state
-            // because monarch doesn't support multiline tokens
-            [/'''[-0-9a-zA-Z_]*/, "string.blockliteral", "@blockliteral"],
-        ],
-        blockliteral: [
-            [/'''/, "string.blockliteral", "@pop"],
-            [/./, "string.blockliteral"],
         ],
     },
 };

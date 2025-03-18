@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-import type { ItemSlotInfo } from "@pistonite/skybook-api";
+import type { ItemSlotInfo } from "./data/ItemSlotInfo.ts";
 
 export type SetItemTooltipFn = (
     x: number,

@@ -1,5 +1,5 @@
 # Dev certificates
-/.cert
+/cert
 *.pem
 *.pfx
 *.key
@@ -19,5 +19,6 @@
 # NPM
 node_modules
 
-# Ignore generated credentials from google-github-actions/auth
-gha-creds-*.json
+/packages/workex
+
+/patches

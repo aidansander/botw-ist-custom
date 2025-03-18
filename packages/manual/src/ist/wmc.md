@@ -1,1 +1,0 @@
-# Weapon Modifier Corruption (WMC)

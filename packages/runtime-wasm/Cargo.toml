@@ -16,3 +16,4 @@ wasm-bindgen-futures = "0.4.50"
 
 [lib]
 crate-type = ["cdylib"]
+

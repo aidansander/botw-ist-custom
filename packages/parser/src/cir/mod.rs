@@ -22,9 +22,6 @@ pub use item_spec::*;
 mod trial;
 pub use trial::*;
 
-mod gdt;
-pub use gdt::*;
-
 /// Parser for the item meta syntax
 ///
 /// This trait exists to allow the meta syntax to be reused for different purposes
@@ -152,12 +149,4 @@ pub fn parse_syn_int_str(number: &str, span: &Span) -> Result<i64, ErrorReport> 
             .parse()
             .map_err(|_| Error::IntFormat(number.to_string()).spanned(span)),
     }
-}
-
-pub fn parse_syn_int_str_i32(number: &str, span: &Span) -> Result<i32, ErrorReport> {
-    let number = parse_syn_int_str(number, span)?;
-    if number > i32::MAX as i64 || number < i32::MIN as i64 {
-        return Err(Error::IntRange(number.to_string()).spanned(span));
-    }
-    Ok(number as i32)
 }

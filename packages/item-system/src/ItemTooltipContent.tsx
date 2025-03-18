@@ -1,12 +1,13 @@
-import { Text, makeStyles } from "@fluentui/react-components";
+import { Text, makeStyles, mergeClasses } from "@fluentui/react-components";
 
-import type { ItemSlotInfo } from "@pistonite/skybook-api";
 import { ModifierSprite } from "botw-item-assets";
 import {
     useGeneratedTranslation,
     useUITranslation,
 } from "skybook-localization";
 
+import { useStaticAssetStyles } from "./images";
+import type { ItemSlotInfo } from "./data/ItemSlotInfo.ts";
 import {
     CookEffect,
     effectToStatus,
@@ -31,6 +32,7 @@ const useStyles = makeStyles({
 export const ItemTooltipContent: React.FC<ItemTooltipContentProps> = ({
     info,
 }) => {
+    const staticAssets = useStaticAssetStyles();
     const styles = useStyles();
 
     const t = useGeneratedTranslation();
@@ -81,7 +83,7 @@ export const ItemTooltipContent: React.FC<ItemTooltipContentProps> = ({
     const foodStatus = effectToStatus(modEffectId);
 
     return (
-        <div className={styles.text}>
+        <div className={mergeClasses(staticAssets.sheikahBg, styles.text)}>
             <div>
                 <Text wrap={false} block>
                     {t(`actor.${actorName}.name`, nameTranslationArgs)}

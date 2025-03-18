@@ -14,8 +14,6 @@ export const SupportedLocales = [
     "zh-TW",
 ] as const;
 
-export const NativelyMaintainedLocales = ["en-US", "zh-CN"];
-
 export const initI18n = () => {
     return initLocaleWithI18next({
         supported: SupportedLocales,
@@ -29,21 +27,6 @@ export const initI18n = () => {
 };
 
 const loadLanguage = async (namespace: string, language: string) => {
-    const strings = (await import(`./${namespace}/${language}.yaml`)).default;
-    if (namespace === "ui" && language !== "en-US") {
-        const enStrings = (await import(`./${namespace}/en-US.yaml`)).default;
-        let countMissing = 0;
-        for (const key in enStrings) {
-            if (!(key in strings)) {
-                strings[key] = enStrings[key];
-                countMissing++;
-            }
-        }
-        if (countMissing > 0) {
-            console.warn(
-                `Missing ${countMissing} strings in ${language} UI, falling back to en-US`,
-            );
-        }
-    }
-    return strings;
+    const strings = await import(`./${namespace}/${language}.yaml`);
+    return strings.default;
 };

@@ -17,13 +17,11 @@ tasks:
       - task: cargo:fmt-fix
 
   build-api-ts-binding:
-    env:
-      LC_ALL: C # consistent sort order
     cmds:
+      - task: build-src
       - rm -f bindings/*.ts ../skybook-api/src/parser/*
       - cargo test --lib --features __ts-binding
-      - find bindings -type f | sort | sed 's/^bindings/export * from "./' | sed 's/$/";/' > index.ts
-      - mv index.ts bindings
+      - find bindings -type f | sed 's/^bindings/export * from "./' | sed 's/$/";/' > bindings/index.ts
       - $(which mkdir) -p ../skybook-api/src/parser
       - mv bindings/*.ts ../skybook-api/src/parser
 
@@ -31,20 +29,15 @@ tasks:
     cmds:
       - cargo test
 
-  test-parse:
-    cmds:
-      - cargo test --test parse
-
-  test-parse-update:
-    env:
-      UPDATE_PARSER_SNAPSHOTS: 1
-    cmds:
-      - cargo test --test parse
-
   check:
     cmds:
       - task: cargo:clippy-all
       - task: cargo:fmt-check
+      - task: build-binding
+      - task: git:check-modification
+        vars:
+          CHECK_PATH: packages/parser/bindings
+          CHECK_MESSAGE: Please regenerate parser bindings with `task build`
 
   fix:
     cmds:
@@ -58,16 +51,6 @@ tasks:
     cmds:
       - $(which mkdir) -p data
       - gcloud storage cp gs://ist-private/artifacts/skybook-parser/*.yaml data/
-
-  pull-artifacts-public:
-    cmds:
-      - $(which mkdir) -p src/generated
-      - wget -O src/generated/item_name.rs https://skybook.pistonite.dev/botw-ist/packages/parser/item_name.rs
-
-  package-artifacts-public:
-    cmds:
-      - $(which mkdir) -p ../manual/book/botw-ist/packages/parser
-      - cp src/generated/item_name.rs ../manual/book/botw-ist/packages/parser/
 
   push-artifacts:
     cmds:

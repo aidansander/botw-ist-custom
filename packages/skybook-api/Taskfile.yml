@@ -8,10 +8,6 @@ includes:
     taskfile: ../parser
     dir: ../parser
     internal: true
-  runtime:
-    taskfile: ../runtime
-    dir: ../runtime
-    internal: true
   git:
     taskfile: ../mono-dev/task/git.yaml
     internal: true
@@ -24,32 +20,24 @@ tasks:
         sh: jq '.version' package.json | tr -d '"'
     cmds:
       - task: parser:build-api-ts-binding
-      - task: runtime:build-api-ts-binding
       - > 
           workex -p skyb-api-{{.VERSION}} --no-gitignore
           src/Extension.ts 
           src/ExtensionApp.ts 
           src/Runtime.ts
           src/RuntimeApp.ts
-      - task: ecma:mono-fix
+      - task: ecma:prettier-fix
 
   check:
     cmds:
+      - task: ecma:tsc-check
+      - task: ecma:prettier-check
       - task: build
       - task: git:check-modification
         vars:
           CHECK_PATH: packages/skybook-api/src
           CHECK_MESSAGE: Please regenerate and commit skybook-api bindings
-      - task: ecma:mono-check
 
   fix:
     cmds:
-      - task: ecma:mono-fix
-
-  test:
-    cmds:
-      - task: ecma:vitest
-
-  dev:
-    cmds:
-      - task: ecma:vitest-watch
+      - task: ecma:prettier-fix

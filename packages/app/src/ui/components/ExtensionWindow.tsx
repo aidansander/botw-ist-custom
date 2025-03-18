@@ -1,8 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import { makeStyles } from "@fluentui/react-components";
-
-import { connectExtensionToApp } from "self::application/extension";
-import { getExtension } from "self::extensions";
+import { ExtensionWrapper } from "extensions/ExtensionWrapper.tsx";
 
 export type ExtensionWindowProps = {
     /** Ids of the extensions loaded in this window */
@@ -47,29 +44,4 @@ export const ExtensionWindow: React.FC<ExtensionWindowProps> = ({
             ))}
         </div>
     );
-};
-
-export type ExtensionWrapperProps = {
-    id: string;
-};
-
-/**
- * Component that wraps and loads an extension component with the given id.
- */
-export const ExtensionWrapper: React.FC<ExtensionWrapperProps> = ({ id }) => {
-    const { isPending, data: ExtComp } = useQuery({
-        queryKey: ["extension", id],
-        queryFn: async () => {
-            const extension = await getExtension(
-                id,
-                false,
-                connectExtensionToApp,
-            );
-            return extension?.Component;
-        },
-    });
-    if (isPending || !ExtComp) {
-        return <div>Loading...</div>;
-    }
-    return <ExtComp />;
 };

@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [[bin]]
-path = "preprocess/preprocess_main.rs"
+path = "preprocess/main.rs"
 name = "skybook-manual-preprocessor"
 
 [dependencies]

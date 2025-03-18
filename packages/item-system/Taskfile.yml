@@ -15,14 +15,18 @@ tasks:
     cmds:
       - $(which mkdir) -p src/generated
       - python scripts/generate.py
+      - task: ecma:prettier-fix
 
   check:
     cmds:
-      - task: ecma:mono-check
+      - task: ecma:tsc-check-build
+      - task: ecma:eslint-check
+      - task: ecma:prettier-check
 
   fix:
     cmds:
-      - task: ecma:mono-fix
+      - task: ecma:eslint-fix
+      - task: ecma:prettier-fix
 
   test:
     cmds:
@@ -35,8 +39,7 @@ tasks:
   pull-artifacts:
     cmds:
       - $(which mkdir) -p src/generated
-      - $(which mkdir) -p public
       - gcloud storage cp gs://ist-private/artifacts/skybook-item-system/*.ts src/generated
-      - gcloud storage cp gs://ist-private/images/SheikahBackground.png public
+      - gcloud storage cp gs://ist-private/images/SheikahBackground.png src/images
 
 
