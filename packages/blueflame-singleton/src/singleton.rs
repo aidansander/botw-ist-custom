@@ -179,7 +179,7 @@ pub fn info_data(env: Environment) -> Singleton {
             Bytecode::CopyReg(3, 0),
             Bytecode::SetRegLo(2, 0),
             Bytecode::SetRegLo(3, 0),
-            Bytecode::SetRegLo(0, 0),
+            //Bytecode::SetRegLo(0, 0)
             // root yaml iter
             Bytecode::ExecuteUntilThenSkipOne(0x00d2e314),
             Bytecode::Allocate(0x10),
