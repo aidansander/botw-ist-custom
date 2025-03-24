@@ -51,6 +51,8 @@ pub fn pmdm(env: Environment) -> Singleton {
     //
     let bytecode = if env.is150() {
         vec![
+            Bytecode::Enter(0x0096AAA0),
+            Bytecode::ExecuteToComplete,
             Bytecode::Enter(0x0096b1cc),
             Bytecode::ExecuteUntilThenAllocSingletonSkipOne(0x0096b200),
             // skip the Disposer ctor
