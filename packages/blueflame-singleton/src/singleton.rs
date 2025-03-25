@@ -147,7 +147,8 @@ pub fn gdt_manager(env: Environment) -> Singleton {
             // finish init normally
             Bytecode::Jump(0x00dcf684),
             Bytecode::ExecuteToComplete,
-            Bytecode::Jump(0x008BF8A0),
+            // init common flags
+            Bytecode::Enter(0x008BF8A0),
             Bytecode::ExecuteToComplete
         ]
     } else {
