@@ -148,8 +148,8 @@ pub fn gdt_manager(env: Environment) -> Singleton {
             Bytecode::Jump(0x00dcf684),
             Bytecode::ExecuteToComplete,
             // init common flags
-            Bytecode::Enter(0x008BF8A0),
-            Bytecode::ExecuteToComplete
+            // Bytecode::Enter(0x008BF8A0),
+            // Bytecode::ExecuteToComplete
         ]
     } else {
         vec![] //TODO
